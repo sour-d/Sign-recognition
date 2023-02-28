@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Flask-Sock Demo</title>
+</head>
+
+<body>
+  <h1>Socket Demo</h1>
+  <div id="log"></div>
+  <br>
+  <form id="form" method="post" action="/pass-frame" enctype=multipart/form-data>
+    <label for="text">Input: </label>
+    <input type="file" id="file" name="file">
+    <input type="submit" id="submit" value="Submit">
+  </form>
+  <!-- <script>
+    const log = (text, color) => {
+      document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+    };
+
+    const socket = new WebSocket('ws://' + location.host + '/process-frame');
+    socket.addEventListener('message', ev => {
+      //log('<<< ' + ev.data, 'blue');
+    });
+    document.getElementById('submit').onclick = async(ev) => {
+      ev.preventDefault();
+      const file = document.getElementById('file');
+      // log('>>> ' + textField.value, 'red');
+      const buffer = await file.files[0].arrayBuffer();
+      socket.send(buffer);
+      socket.emit("frame", )
+      file.value = '';
+      console.log('done');
+    };
+
+    socket.onopen = () => console.log("connection opened");
+    
+    socket.onmessage = (msgEvent) => console.log("Got a message : " + msgEvent.data);
+    
+    document.getElementById('submit').onclick = async (ev) => {
+      ev.preventDefault();
+      const fileInput = document.getElementById('file');
+      const file = fileInput.files[0];
+      socket.send(file);
+      fileInput.value = '';
+      console.log('Sent');
+    };
+  </script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script> -->
+  <!-- <script type="text/javascript" charset="utf-8">
+      // var socket = io();
+      // socket.on('connect', () => console.log("connection opened"));
+
+      document.getElementById('submit').onclick = async (ev) => {
+        ev.preventDefault();
+        const form = document.getElementById('form');
+        const formData = new FormData(form);
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+        formData.file = await file.arrayBuffer();
+        //socket.emit("frame", file);
+        fileInput.value = '';
+        fetch('/pass-frame', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: formData
+        }).then((respnse) => console.log(response));
+        console.log('Sent');
+      };
+  </script> -->
+</body>
+
+</html>
