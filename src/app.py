@@ -1,19 +1,22 @@
+from flask import Flask
+from detectAction import predict_image
+from flask import render_template
+import flask
+import io
+import numpy as np
+from PIL import Image
+from flask_socketio import SocketIO, emit
+from flask_sock import Sock
+import random
 import sys
 sys.path.insert(1, './src')
-
-from flask_sock import Sock
-from flask_socketio import SocketIO, emit
-from PIL import Image
-import numpy as np
-import io
-import flask
-from flask import render_template
-from detectAction import predict_image, words, accuracy
-from flask import Flask
 
 app = Flask(__name__)
 socket = Sock(app)
 socketio = SocketIO(app)
+
+words = ''
+accuracy = 0
 
 
 @app.route('/')
@@ -35,7 +38,7 @@ def handle_request():
     arrayOfImgData = np.asarray(imageData)
     print(arrayOfImgData)
 
-    predict_image(arrayOfImgData)
+    words, accuracy = predict_image(arrayOfImgData)
     response = flask.jsonify({'message': 'File successfully uploaded'})
     response.status_code = 201
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -44,7 +47,7 @@ def handle_request():
 
 @app.route('/get-predicted-word', methods=['GET'])
 def pass_predicted_word():
-    response = flask.jsonify({words, accuracy})
+    response = flask.jsonify({'words': words, 'accuracy': accuracy})
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.status_code = 200
     return response
@@ -67,6 +70,6 @@ def pass_predicted_word():
 #   print("whats up")
 #   numpydata = np.asarray(frame).astype("float16")
   # predict_image(numpydata)
-    
+
 
 app.run(host="0.0.0.0", port=1234, debug=True)
