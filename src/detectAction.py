@@ -6,6 +6,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import TensorBoard
 from scipy import stats
+from PIL import Image
 
 
 mp_holistic = mp.solutions.holistic  # Holistic model
@@ -114,9 +115,11 @@ def predict_image(frame):
     sentence = []
     predictions = []
     threshold = 0.8
+    fileIndex = 0
 
-    accuracy = ""
+    accuracy = 0
     words = ""
+    print("started predict_image()")
 
     # Set mediapipe model
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
@@ -145,12 +148,15 @@ def predict_image(frame):
             
         #3. Viz logic
             if np.unique(predictions[-10:])[0] == np.argmax(res):
+                print(res[np.argmax(res)])
                 if res[np.argmax(res)] > threshold:
                     accuracy = res[np.argmax(res)]
+                    print(accuracy)
 
                     if len(sentence) > 0:
                         if actions[np.argmax(res)] != sentence[-1]:
                             words = actions[np.argmax(res)]
+                            print(words)
                             sentence.append(actions[np.argmax(res)])
 
                     else:
@@ -161,7 +167,11 @@ def predict_image(frame):
 
             # Viz probabilities
             image = prob_viz(res, actions, image, colors)
+            Images = Image.open(image)
+            Images.save("temp1/file" + str(fileIndex) + ".jpeg")
+            fileIndex += 1
 
+        print("ends predict_image()")
         return (words, accuracy)
 
         # print(sentence)
