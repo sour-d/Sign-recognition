@@ -1,3 +1,4 @@
+import io
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -109,31 +110,35 @@ def draw_landmarks(image, results):
                               mp_holistic.HAND_CONNECTIONS)  # Draw right hand connections
 
 
-def predict_image(frame):
+
+def predict_image():
     # 1. New detection variables
     sequence = []
     sentence = []
     predictions = []
-    threshold = 0.8
+    threshold = 0.5
     fileIndex = 0
 
-    accuracy = 0
-    words = ""
+    global accuracy
+    global words
     print("started predict_image()")
+    vidcap = cv2.VideoCapture("C:/Users/swetha/Desktop/noteBook/Sign-recognition/src/Hello.mp4")
 
     # Set mediapipe model
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
-        # while cap.isOpened():
+      for frame_idx in range(int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))):
 
         # Read feed
-        # ret, frame = cap.read()
+        print(frame_idx)
+        ret, frame = vidcap.read()
+        
 
         # Make detections
         image, results = mediapipe_detection(frame, holistic)
         # print(results)
 
         # Draw landmarks
-        draw_styled_landmarks(frame, results)
+        draw_styled_landmarks(image, results)
 
         # 2. Prediction logic
         keypoints = extract_keypoints(results)
@@ -148,10 +153,12 @@ def predict_image(frame):
             
         #3. Viz logic
             if np.unique(predictions[-10:])[0] == np.argmax(res):
-                print(res[np.argmax(res)])
+                # print(res[np.argmax(res)])
                 if res[np.argmax(res)] > threshold:
                     accuracy = res[np.argmax(res)]
                     print(accuracy)
+                    words = actions[np.argmax(res)]
+                    print(words)
 
                     if len(sentence) > 0:
                         if actions[np.argmax(res)] != sentence[-1]:
@@ -167,25 +174,15 @@ def predict_image(frame):
 
             # Viz probabilities
             image = prob_viz(res, actions, image, colors)
-            Images = Image.open(image)
-            Images.save("temp1/file" + str(fileIndex) + ".jpeg")
-            fileIndex += 1
+           
 
         print("ends predict_image()")
-        return (words, accuracy)
+    print(words,accuracy)
+    return (words, accuracy)
 
-        # print(sentence)
-        # print(res)
+words,accuracy=predict_image()
 
-        # cv2.rectangle(image, (0,0), (640, 40), (245, 117, 16), -1)
-        # cv2.putText(image, ' '.join(sentence), (3,30),
-        #    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
-        # Show to screen
-        # cv2.imshow('OpenCV Feed', image)
 
-        # Break gracefully
-        # if cv2.waitKey(10) & 0xFF == ord('q'):
-        # break
-    # cap.release()
-    # cv2.destroyAllWindows()
+
+
