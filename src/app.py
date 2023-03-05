@@ -34,12 +34,11 @@ def index():
 #     return response
 
 
-# @app.route('/rand-num', methods=['GET'])
-# def generate_random_number():
-#     response = flask.make_response(str(random.randint(0, 999)))
-#     response.mimetype = "text/plain"
-#     response.status_code = 200
-#     return response
+@socket.route('/rand-num', methods=['GET'])
+def generate_random_number(sock):
+    while True:
+        time.sleep(2)
+        sock.send(str(random.randint(0, 999)))
 
 
 def FetchData(send_data_func):
